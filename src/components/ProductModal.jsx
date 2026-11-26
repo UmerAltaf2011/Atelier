@@ -64,6 +64,7 @@ export default function ProductModal() {
                   {product.brandDomain ? 'Brand site' : 'Find it online'} <ArrowUpRight size={16} />
                 </a>
               </div>
+              {product.illustrative && <p className="modal-note"><span className="tag-demo">Approximate price</span> This piece is from our curated catalogue. The name is typical of the brand's range, but the price and availability are estimates. Check the brand's site for the real listing.</p>}
               <p className="modal-note">Source: {product.source || 'live catalogue'}. Atelier links out to the brand; we never take a commission.</p>
             </div>
           </motion.div>

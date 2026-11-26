@@ -2,6 +2,8 @@ import { memo } from '../lib/cache.js';
 import { BRANDS, findBrand } from '../data/brands.js';
 import { fetchDummyJson } from './dummyjson.js';
 import { fetchFakeStore } from './fakestore.js';
+import { fetchCurated } from './curated.js';
+import { ARCHETYPES } from '../data/archetypes.js';
 
 // ─── Add real retail feeds here ────────────────────────────────────────────
 // No free public API covers "every brand in the world". Real brand catalogues
@@ -9,7 +11,7 @@ import { fetchFakeStore } from './fakestore.js';
 // partnerships. Write one `fetchX()` that returns items in the shape below and
 // add it to PROVIDERS; the rest of the app picks it up automatically.
 //   { id, source, name, brand, category, gender, priceUsd, rating, image, images, description, tags }
-const PROVIDERS = [fetchDummyJson, fetchFakeStore];
+const PROVIDERS = [fetchDummyJson, fetchFakeStore, fetchCurated];
 
 // Used only when every live provider is unreachable (no images: the UI draws art).
 const SEED = [
@@ -75,6 +77,8 @@ export async function queryProducts(params) {
     (!params.gender || params.gender === 'All' || it.gender === params.gender || it.gender === 'unisex') &&
     (!params.tier || params.tier === 'All' || it.tier === params.tier) &&
     (!brandQ || it.brand.toLowerCase() === brandQ) &&
+    (!params.style || (it.archetypes || []).includes(params.style)) &&
+    (!params.country || it.country === params.country) &&
     it.priceUsd <= maxUsd &&
     (!q || `${it.name} ${it.brand} ${it.category} ${it.description} ${it.tags.join(' ')}`.toLowerCase().includes(q)));
 
@@ -97,8 +101,9 @@ export async function queryProducts(params) {
     items: list.slice((page - 1) * limit, page * limit),
     facets: {
       categories: count('category'),
-      brands: count('brand').slice(0, 80),
+      brands: count('brand').slice(0, 400),
       tiers: count('tier'),
+      styles: ARCHETYPES.map(a => ({ id: a.id, name: a.name, emoji: a.emoji, n: items.filter(i => (i.archetypes || []).includes(a.id)).length })),
       maxPriceUsd: Math.ceil(Math.max(...items.map(i => i.priceUsd), 100)),
     },
   };

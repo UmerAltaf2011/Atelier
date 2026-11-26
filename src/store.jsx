@@ -6,8 +6,8 @@ const LS = 'atelier_state_v3';
 
 export const DEFAULT_STATE = {
   dna: {
-    archetype: 'Architectural Minimalist', palette: 'Obsidian, Bone & Raw Camel',
-    swatches: ['#14110f', '#e9e0d0', '#b98c5a'], silhouette: 'Relaxed Tailoring',
+    archetypeId: 'minimalism', archetype: 'Minimalist', runnerUpId: '', palette: 'Bone, Charcoal & Stone',
+    swatches: ['#e9e4da', '#2b2b2e', '#9c9a94'], silhouette: 'Clean lines, muted tones',
     occasion: 'Everyday', budgetTier: 'Contemporary & Luxury', completed: false,
   },
   saved: [], outfits: [], currency: 'USD', currencyAuto: true, location: null, prefs: { liveLocation: false },
@@ -200,9 +200,28 @@ export function AppProvider({ children }) {
     setToken(r.token);
     setUser(r.user);
   }, []);
+  // Each returns {mail:{sent,mode}, devCode?}. devCode only appears in development when no email provider is set.
   const register = useCallback(async (email, password, name) => {
-    adoptServerSession(await api('/auth/register', { method: 'POST', body: { email, password, name } }));
-    toast('Account created. Your data is now yours on any device.');
+    const r = await api('/auth/register', { method: 'POST', body: { email, password, name } });
+    adoptServerSession(r);
+    toast('Account created. Check your inbox for a verification code.');
+    return r;
+  }, [adoptServerSession, toast]);
+  const verifyEmail = useCallback(async code => {
+    const r = await api('/auth/verify', { method: 'POST', body: { code } });
+    setUser(r.user);
+    toast('Email verified');
+    return r;
+  }, [toast]);
+  const resendCode = useCallback(() => api('/auth/resend', { method: 'POST' }), []);
+  const forgotPassword = useCallback(email => api('/auth/forgot', { method: 'POST', body: { email } }), []);
+  const resetPassword = useCallback(async (email, code, password) => {
+    const r = await api('/auth/reset', { method: 'POST', body: { email, code, password } });
+    adoptServerSession(r);
+    skipNext.current = true; hydrated.current = true;
+    setState(normalize(r.user.state));
+    toast('Password updated. Welcome back.');
+    return r;
   }, [adoptServerSession, toast]);
   const login = useCallback(async (email, password) => {
     const r = await api('/auth/login', { method: 'POST', body: { email, password } });
@@ -223,11 +242,11 @@ export function AppProvider({ children }) {
   const value = useMemo(() => ({
     state, user, online, ready, rates, weather, saveStatus, fmt, savedIds,
     updateState, setCurrency, resetCurrencyAuto, toggleSaved, applyLocation, syncLocation,
-    register, login, logout, deleteAccount, toast, toastState,
+    register, login, logout, deleteAccount, verifyEmail, resendCode, forgotPassword, resetPassword, toast, toastState,
     chat, openChat: (seed = '') => setChat({ open: true, seed }), closeChat: () => setChat({ open: false, seed: '' }),
     product, openProduct: setProduct, currencyOpen, setCurrencyOpen,
   }), [state, user, online, ready, rates, weather, saveStatus, fmt, savedIds, updateState, setCurrency, resetCurrencyAuto,
-    toggleSaved, applyLocation, syncLocation, register, login, logout, deleteAccount, toast, toastState, chat, product, currencyOpen]);
+    toggleSaved, applyLocation, syncLocation, register, login, logout, deleteAccount, verifyEmail, resendCode, forgotPassword, resetPassword, toast, toastState, chat, product, currencyOpen]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

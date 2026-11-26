@@ -32,6 +32,8 @@ export function matchScore(item, dna) {
   let s = 64 + (Math.min(5, Math.max(1, item.rating || 4)) - 3) * 7 + (hash(item.id) % 7);
   const tier = dna?.budgetTier || '';
   if (tier && (tier.includes(item.tier) || (item.tier === 'Sport & Street' && /street/i.test(tier)))) s += 7;
+  if (dna?.archetypeId && (item.archetypes || []).includes(dna.archetypeId)) s += 12;
+  else if (dna?.runnerUpId && (item.archetypes || []).includes(dna.runnerUpId)) s += 6;
   return Math.max(60, Math.min(99, Math.round(s)));
 }
 

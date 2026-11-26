@@ -31,3 +31,20 @@ export function checkPassword(password, stored) {
   const b = Buffer.from(hash, 'hex');
   return a.length === b.length && crypto.timingSafeEqual(a, b);
 }
+
+// ── Six-digit email codes (verify / reset). Only an HMAC is stored; 15 min expiry; 5 tries. ──
+const codeHash = (userId, kind, code) => hmac(`${userId}:${kind}:${code}`);
+export function issueCode(user, kind) {
+  const code = String(crypto.randomInt(0, 1_000_000)).padStart(6, '0');
+  user.codes = { ...(user.codes || {}), [kind]: { h: codeHash(user.id, kind, code), exp: Date.now() + 15 * 60_000, tries: 0 } };
+  return code;
+}
+export function checkCode(user, kind, code) {
+  const c = user.codes?.[kind];
+  if (!c || c.exp < Date.now() || c.tries >= 5) return false;
+  c.tries += 1;
+  const a = Buffer.from(codeHash(user.id, kind, String(code || '').trim())), b = Buffer.from(c.h);
+  const ok = a.length === b.length && crypto.timingSafeEqual(a, b);
+  if (ok) delete user.codes[kind];
+  return ok;
+}

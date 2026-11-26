@@ -8,6 +8,7 @@ import Nav from './Nav.jsx';
 import ChatDrawer from './ChatDrawer.jsx';
 import ProductModal from './ProductModal.jsx';
 import CurrencyDialog from './CurrencyDialog.jsx';
+import { CursorBlob, Preloader, StreetBackdrop } from './fx.jsx';
 
 function ScrollBar() {
   const { scrollYProgress } = useScroll();
@@ -21,11 +22,11 @@ function Footer() {
     <footer className="footer">
       <div className="footer-top">
         <div>
-          <div className="logo big">atelier<span>.</span></div>
-          <p className="footer-tag">Dress with intelligence. A living wardrobe that knows your city, your currency and your taste.</p>
+          <div className="logo big">ATELIER<span>.</span></div>
+          <p className="footer-tag">Streetwear that knows your block, your weather and your currency.</p>
         </div>
         <div className="footer-cols">
-          <div><h4>Explore</h4><Link to="/shop">Discover</Link><Link to="/brands">Brands</Link><Link to="/quiz">Style DNA</Link></div>
+          <div><h4>Explore</h4><Link to="/shop">Discover</Link><Link to="/brands">Brands</Link><Link to="/quiz">Style quiz</Link></div>
           <div><h4>Yours</h4><Link to="/wardrobe">Wardrobe</Link><Link to="/account">Account</Link><Link to="/about">How it works</Link></div>
         </div>
       </div>
@@ -50,12 +51,16 @@ export default function Layout() {
 
   return (
     <>
+      <Preloader />
+      <StreetBackdrop />
+      <CursorBlob />
       <ScrollBar />
       <div className="grain" aria-hidden="true"></div>
+      <motion.div key={`wipe-${pathname}`} className="wipe" initial={{ scaleY: 1 }} animate={{ scaleY: 0 }} transition={{ duration: 0.75, delay: 0.1, ease: [0.76, 0, 0.24, 1] }} aria-hidden="true" />
       <Nav />
       <AnimatePresence mode="wait">
-        <motion.main key={pathname} className="page" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-          transition={{ duration: 0.4, ease: [0.2, 0.7, 0.2, 1] }}>
+        <motion.main key={pathname} className="page" initial={{ opacity: 0, y: 40, skewY: 1.5 }} animate={{ opacity: 1, y: 0, skewY: 0 }} exit={{ opacity: 0, y: -30 }}
+          transition={{ duration: 0.5, ease: [0.2, 0.7, 0.2, 1] }}>
           <Outlet />
         </motion.main>
       </AnimatePresence>

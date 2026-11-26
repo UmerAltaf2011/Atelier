@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, Search } from 'lucide-react';
 import { useApiData } from '../lib/hooks.js';
+import { PageHero } from '../components/street.jsx';
 import useTitle from '../lib/useTitle.js';
 import { flag } from '../lib/format.js';
 import { Reveal } from '../components/motion.jsx';
@@ -23,13 +24,8 @@ export default function Brands() {
 
   return (
     <>
-      <header className="page-head">
-        <Reveal>
-          <div className="eyebrow">Worldwide directory</div>
-          <h1 className="h1">Every <em>house.</em></h1>
-          <p className="lead">{brands.length || '…'} brands from {countries.length - 1 || '…'} countries. Logos load live from each brand's own site. Brands with live pieces link straight into the catalogue.</p>
-        </Reveal>
-      </header>
+      <PageHero variant="wall" kicker="Worldwide directory" lines={[['THE', ''], ['WALL.', 'tag']]}
+        sub={<p className="lead">{brands.length || '…'} brands from {countries.length - 1 || '…'} countries. Logos load live from each brand's own site. Tap a label to see its full range.</p>} />
 
       <div className="filters">
         <label className="search-field wide"><Search size={17} /><input value={q} onChange={e => setQ(e.target.value)} placeholder="Search a brand…" /></label>
@@ -52,7 +48,7 @@ export default function Brands() {
               <h3>{b.name}</h3>
               <p>{flag(b.country)} {b.country} · {b.tier}</p>
               <div className="brand-links">
-                {b.products > 0 && <Link to={`/shop?brand=${encodeURIComponent(b.name)}`} className="tag-live"><i></i>{b.products} live piece{b.products > 1 ? 's' : ''}</Link>}
+                {b.products > 0 && <Link to={`/shop?brand=${encodeURIComponent(b.name)}`} className="tag-live"><i></i>{b.products} piece{b.products > 1 ? 's' : ''}</Link>}
                 <a href={`https://${b.domain}`} target="_blank" rel="noreferrer noopener">Official site <ArrowUpRight size={13} /></a>
               </div>
             </Reveal>

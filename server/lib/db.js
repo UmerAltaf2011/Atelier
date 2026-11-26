@@ -37,10 +37,12 @@ export const secret = () => env('JWT_SECRET') || data.meta.secret;
 
 export const defaultState = () => ({
   dna: {
-    archetype: 'Architectural Minimalist',
-    palette: 'Obsidian, Bone & Raw Camel',
-    swatches: ['#14110f', '#e9e0d0', '#b98c5a'],
-    silhouette: 'Relaxed Tailoring',
+    archetypeId: 'minimalism',
+    archetype: 'Minimalist',
+    runnerUpId: '',
+    palette: 'Bone, Charcoal & Stone',
+    swatches: ['#e9e4da', '#2b2b2e', '#9c9a94'],
+    silhouette: 'Clean lines, muted tones',
     occasion: 'Everyday',
     budgetTier: 'Contemporary & Luxury',
     completed: false,
@@ -64,6 +66,9 @@ export function createUser() {
     state: defaultState(),
     savedAt: null,
     chat: [],
+    verified: false,
+    codes: {},
+    quiz: { ids: [], texts: [] },
   };
   data.users[user.id] = user;
   save();

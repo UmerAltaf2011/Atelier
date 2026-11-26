@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useApiData } from '../lib/hooks.js';
+import { PageHero, ScrollWords } from '../components/street.jsx';
 import useTitle from '../lib/useTitle.js';
 import { Reveal } from '../components/motion.jsx';
 
@@ -21,13 +22,9 @@ export default function About() {
 
   return (
     <>
-      <header className="page-head">
-        <Reveal>
-          <div className="eyebrow">Under the hood</div>
-          <h1 className="h1">Built on <em>live data.</em></h1>
-          <p className="lead">Atelier is a React front end with its own Node backend. Nothing on this site is a screenshot: products, prices, weather and location are fetched live and saved to your account.</p>
-        </Reveal>
-      </header>
+      <PageHero variant="manual" kicker="Under the hood" lines={[['THE', ''], ['MANUAL.', 'tag']]}
+        sub={<p className="lead">Atelier is a React front end with its own Node backend. Nothing here is a screenshot: products, prices, weather and location are fetched live and saved to your account.</p>} />
+      <section className="section manifesto small"><ScrollWords text="No gatekeeping. No luxury tax. Real data, real weather, _your_ currency, and a stylist that remembers what you like." /></section>
 
       <section className="section tight">
         <Reveal className="section-head"><h2 className="h2">Where the data <em>comes from.</em></h2></Reveal>

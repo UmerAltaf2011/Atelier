@@ -5,6 +5,8 @@ import { MotionConfig } from 'framer-motion';
 import App from './App.jsx';
 import { AppProvider } from './store.jsx';
 import './styles.css';
+import './street.css';
+import './fire.css';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

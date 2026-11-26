@@ -4,6 +4,7 @@ import { AnimatePresence } from 'framer-motion';
 import { Search, X } from 'lucide-react';
 import { api } from '../lib/api.js';
 import { useDebounced } from '../lib/hooks.js';
+import { PageHero } from '../components/street.jsx';
 import useTitle from '../lib/useTitle.js';
 import { useApp } from '../store.jsx';
 import { Reveal } from '../components/motion.jsx';
@@ -17,7 +18,7 @@ export default function Shop() {
   const [sp, setSp] = useSearchParams();
   const f = {
     q: sp.get('q') || '', category: sp.get('category') || 'All', gender: sp.get('gender') || 'All',
-    tier: sp.get('tier') || 'All', brand: sp.get('brand') || '', sort: sp.get('sort') || 'rating', maxUsd: sp.get('maxUsd') || '',
+    tier: sp.get('tier') || 'All', brand: sp.get('brand') || '', style: sp.get('style') || '', sort: sp.get('sort') || 'rating', maxUsd: sp.get('maxUsd') || '',
   };
   const set = patch => {
     const n = new URLSearchParams(sp);
@@ -80,21 +81,16 @@ export default function Shop() {
   };
 
   const clear = () => { setQInput(''); setPrice(''); setSp({}, { replace: true }); };
-  const filtered = !!(f.q || f.brand || f.maxUsd || f.category !== 'All' || f.gender !== 'All' || f.tier !== 'All' || f.sort !== 'rating');
+  const filtered = !!(f.q || f.brand || f.style || f.maxUsd || f.category !== 'All' || f.gender !== 'All' || f.tier !== 'All' || f.sort !== 'rating');
   const sliderValue = Number(price) || maxPrice;
 
   return (
     <>
-      <header className="page-head">
-        <Reveal>
-          <div className="eyebrow">Live catalogue</div>
-          <h1 className="h1">Discover <em>pieces.</em></h1>
-          <p className="lead">
-            {meta.total.toLocaleString()} pieces from live feeds, priced in {state.currency}.
+      <PageHero variant="drop" kicker="Live catalogue" lines={[['THE', ''], ['DROP.', 'tag']]}
+        sub={<p className="lead">
+            {meta.total.toLocaleString()} pieces from live feeds and our curated Pakistan + world catalogue, priced in {state.currency}.
             {!meta.live && ' (Offline sample shown: the live feeds are unreachable right now.)'}
-          </p>
-        </Reveal>
-      </header>
+          </p>} />
 
       <div className="filters">
         <label className="search-field wide">
@@ -102,6 +98,12 @@ export default function Shop() {
           <input value={qInput} onChange={e => setQInput(e.target.value)} placeholder="Search pieces, brands, fabrics…" />
           {qInput && <button type="button" onClick={() => setQInput('')} aria-label="Clear search"><X size={15} /></button>}
         </label>
+        <div className="style-row" role="group" aria-label="Style archetype">
+          <button className={`chip${!f.style ? ' on' : ''}`} onClick={() => set({ style: '' })}>✨ All vibes</button>
+          {(facets?.styles || []).filter(x => x.n > 0).map(x => (
+            <button key={x.id} className={`chip${f.style === x.id ? ' on' : ''}`} onClick={() => set({ style: x.id })}>{x.emoji} {x.name}</button>
+          ))}
+        </div>
         <div className="chip-row">
           {['All', ...(facets?.categories || []).map(c => c.name)].map(c => (
             <button key={c} className={`chip${f.category === c ? ' on' : ''}`} onClick={() => set({ category: c })}>{c}</button>

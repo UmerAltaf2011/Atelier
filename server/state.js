@@ -18,7 +18,9 @@ export function mergeState(current, body) {
   if (body.dna && typeof body.dna === 'object') {
     const d = body.dna;
     s.dna = {
+      archetypeId: str(d.archetypeId, 30) || s.dna.archetypeId || '',
       archetype: str(d.archetype, 60) || s.dna.archetype,
+      runnerUpId: str(d.runnerUpId, 30) || s.dna.runnerUpId || '',
       palette: str(d.palette, 80) || s.dna.palette,
       swatches: Array.isArray(d.swatches) ? d.swatches.slice(0, 6).map(c => str(c, 9)) : s.dna.swatches,
       silhouette: str(d.silhouette, 60) || s.dna.silhouette,

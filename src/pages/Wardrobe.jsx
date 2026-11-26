@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Droplets, MapPin, Plus, Shuffle, Sparkles, Trash2, Wind } from 'lucide-react';
 import { useApp } from '../store.jsx';
 import { useApiData } from '../lib/hooks.js';
+import { PageHero } from '../components/street.jsx';
 import useTitle from '../lib/useTitle.js';
 import { flag, matchScore } from '../lib/format.js';
 import { Reveal } from '../components/motion.jsx';
@@ -87,13 +88,8 @@ export default function Wardrobe() {
 
   return (
     <>
-      <header className="page-head">
-        <Reveal>
-          <div className="eyebrow">Your capsule</div>
-          <h1 className="h1">Digital <em>wardrobe.</em></h1>
-          <p className="lead">Everything here is saved to your account automatically and follows you to any device.</p>
-        </Reveal>
-      </header>
+      <PageHero variant="rack" kicker="Your capsule" lines={[['YOUR', ''], ['RACK.', 'tag']]}
+        sub={<p className="lead">Everything here saves to your account automatically and follows you to any device.</p>} />
 
       <section className="dash">
         <Reveal className="dash-card dna-card">

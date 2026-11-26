@@ -8,7 +8,7 @@ import { useDebounced } from '../lib/hooks.js';
 import { flag } from '../lib/format.js';
 
 const LINKS = [
-  ['/shop', 'Discover'], ['/brands', 'Brands'], ['/wardrobe', 'Wardrobe'], ['/quiz', 'Style DNA'], ['/about', 'About'],
+  ['/shop', 'Discover'], ['/brands', 'Brands'], ['/wardrobe', 'Wardrobe'], ['/quiz', 'Style quiz'], ['/about', 'About'],
 ];
 
 function LocationPopover({ onClose }) {
@@ -85,7 +85,7 @@ export default function Nav() {
   const loc = state.location;
   return (
     <header className={`nav${scrolled ? ' scrolled' : ''}${pathname === '/' && !scrolled ? ' on-dark' : ''}`}>
-      <Link to="/" className="logo">atelier<span>.</span></Link>
+      <Link to="/" className="logo">ATELIER<span>.</span></Link>
 
       <nav className="nav-links" aria-label="Main">
         {LINKS.map(([to, label]) => (

@@ -35,11 +35,12 @@ export default function ProductCard({ item, index = 0 }) {
           <Img className="p-img" src={item.image} name={item.name} />
           {hover && <Img className="p-img p-img-alt" src={hover} name={item.name} />}
           <span className="p-badge">{matchScore(item, state.dna)}% match</span>
-          <span className="p-live"><i></i> Live</span>
+          {item.illustrative ? <span className="p-live"><i></i> Curated</span> : <span className="p-live"><i></i> Live</span>}
         </div>
         <motion.button
           className={`p-heart${saved ? ' on' : ''}`}
-          whileTap={{ scale: 0.8 }}
+          whileHover={{ scale: 1.2, rotate: 8 }}
+          whileTap={{ scale: 0.75 }}
           onClick={() => toggleSaved(item)}
           aria-label={saved ? 'Remove from wardrobe' : 'Save to wardrobe'}
           aria-pressed={saved}
@@ -49,7 +50,7 @@ export default function ProductCard({ item, index = 0 }) {
         <div className="p-info" onClick={() => openProduct(item)}>
           <div className="p-brand"><span>{item.brand}</span><span>{item.category}</span></div>
           <h3 className="p-name">{item.name}</h3>
-          <div className="p-price" title={`$${item.priceUsd.toFixed(2)} USD`}>{fmt(item.priceUsd)}</div>
+          <div className="p-price" title={item.illustrative ? 'Approximate price, check the brand for the real one' : `$${item.priceUsd.toFixed(2)} USD`}>{item.illustrative ? '≈ ' : ''}{fmt(item.priceUsd)}</div>
         </div>
       </div>
     </motion.article>
